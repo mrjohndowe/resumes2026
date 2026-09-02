@@ -81,5 +81,5 @@ $u=require_login();
   </main>
 </div>
 <script>window.RESUME_USER=<?=json_encode($u,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT)?>;</script>
-<script src="assets/resume.js?v=20260820-experience-fix1"></script>
+<script src="assets/resume.js?v=20260901-automatic-timeline1"></script>
 </body></html>

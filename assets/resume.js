@@ -670,49 +670,38 @@ function parseMonth(v){
  const d=new Date('1 '+normalized);
  return isNaN(d)?null:new Date(d.getFullYear(),d.getMonth(),1);
 }
-function experienceMonths(jobs){
- /*
-  * Calculate elapsed employment months, while counting overlapping
-  * employment only once.
-  *
-  * Important: the old code added one extra month to every merged range.
-  * Example: Jan 2024 -> Jan 2025 was calculated as 13 months.
-  * The correct elapsed duration is 12 months.
-  */
+function monthIndex(d){
+ return d.getFullYear()*12+d.getMonth();
+}
+/*
+ * The timeline and Total Employment Experience deliberately use this one
+ * parser.  An end date is the first day of its displayed month (exclusive),
+ * so Jan 2024 through Jan 2025 is exactly 12 elapsed months.
+ */
+function employmentRanges(jobs){
  const ranges=[];
-
- for(const j of jobs||[]){
-   let start=parseMonth(j.start);
-   let end=parseMonth(j.end||'Present');
-
+ for(const [index,job] of (jobs||[]).entries()){
+   let start=parseMonth(job.start);
+   let end=parseMonth(job.end||'Present');
    if(!start||!end)continue;
    if(end<start)[start,end]=[end,start];
-
-   const startMonth=start.getFullYear()*12+start.getMonth();
-   const endMonth=end.getFullYear()*12+end.getMonth();
-
-   ranges.push([startMonth,endMonth]);
+   ranges.push({index,job,start,end,startMonth:monthIndex(start),endMonth:monthIndex(end)});
  }
-
+ return ranges;
+}
+function experienceMonths(jobs){
+ const ranges=employmentRanges(jobs)
+   .map(range=>[range.startMonth,range.endMonth])
+   .sort((a,b)=>a[0]-b[0]);
  if(!ranges.length)return 0;
-
- ranges.sort((a,b)=>a[0]-b[0]);
 
  const merged=[];
  for(const range of ranges){
    const last=merged[merged.length-1];
-
-   if(!last || range[0]>last[1]){
-     merged.push([...range]);
-   }else if(range[1]>last[1]){
-     last[1]=range[1];
-   }
+   if(!last || range[0]>last[1])merged.push([...range]);
+   else if(range[1]>last[1])last[1]=range[1];
  }
-
- return merged.reduce(
-   (total,[startMonth,endMonth])=>total+Math.max(0,endMonth-startMonth),
-   0
- );
+ return merged.reduce((total,[startMonth,endMonth])=>total+Math.max(0,endMonth-startMonth),0);
 }
 function updateExperience(){
  const m=experienceMonths(state.jobs);
@@ -726,9 +715,6 @@ function updateExperience(){
  expEl.textContent=`Total Employment Experience: ${parts.length?parts.join(', '):'0 months'}`;
 }
 
-function monthIndex(d){
- return d.getFullYear()*12+d.getMonth();
-}
 function monthDurationLabel(months){
  const y=Math.floor(months/12),m=months%12,parts=[];
  if(y)parts.push(`${y} year${y===1?'':'s'}`);
@@ -745,21 +731,7 @@ function svgEl(name,attrs={},text=''){
 function renderEmploymentTimeline(svg,jobs){
  if(!svg)return;
  while(svg.lastChild)svg.removeChild(svg.lastChild);
-
- const now=new Date();
- const currentMonth=new Date(now.getFullYear(),now.getMonth(),1);
- const ranges=[];
- (jobs||[]).forEach((job,index)=>{
-   let start=parseMonth(job.start);
-   if(!start)return;
-   let endRaw=(job.end||'').trim();
-   let end=(!endRaw||/present|current/i.test(endRaw))?currentMonth:parseMonth(endRaw);
-   if(!end)return;
-   if(end<start)[start,end]=[end,start];
-
-   const endExclusive=new Date(end.getFullYear(),end.getMonth()+1,1);
-   ranges.push({index,start,end,endExclusive,job});
- });
+ const ranges=employmentRanges(jobs);
 
  const W=547.28,H=105,left=14,right=10,axisY=75;
  const plotW=W-left-right;
@@ -771,11 +743,12 @@ function renderEmploymentTimeline(svg,jobs){
    return;
  }
 
- const earliest= Math.min(...ranges.map(r=>monthIndex(r.start)));
- const latest = Math.max(monthIndex(currentMonth)+1,...ranges.map(r=>monthIndex(r.endExclusive)));
- // Give the graph a small visual margin while keeping every bar proportional to its actual dates.
+ const earliest=Math.min(...ranges.map(r=>r.startMonth));
+ const latest=Math.max(...ranges.map(r=>r.endMonth));
+ // The axis is based only on entered employment dates. Current month is used
+ // only for blank/Present endings, never as padding for historical jobs.
  const domainStart=Math.floor(earliest/12)*12;
- const domainEnd=Math.max(domainStart+24,Math.ceil(latest/12)*12);
+ const domainEnd=Math.max(domainStart+12,Math.ceil((latest+1)/12)*12);
  const domainMonths=domainEnd-domainStart;
  const xForMonth=m=>left+((m-domainStart)/domainMonths)*plotW;
  const xForDate=d=>xForMonth(monthIndex(d));
@@ -793,16 +766,15 @@ function renderEmploymentTimeline(svg,jobs){
  }
 
  // Place overlapping date ranges into separate vertical lanes.
- const ordered=[...ranges].sort((a,b)=>a.start-b.start || b.endExclusive-a.endExclusive || a.index-b.index);
+ const ordered=[...ranges].sort((a,b)=>a.startMonth-b.startMonth || b.endMonth-a.endMonth || a.index-b.index);
  const laneEnds=[];
  ordered.forEach(r=>{
-   const startMonth=monthIndex(r.start);
-   let lane=laneEnds.findIndex(endMonth=>startMonth>=endMonth);
+   let lane=laneEnds.findIndex(endMonth=>r.startMonth>=endMonth);
    if(lane<0){
      lane=laneEnds.length;
-     laneEnds.push(monthIndex(r.endExclusive));
+     laneEnds.push(r.endMonth);
    }else{
-     laneEnds[lane]=monthIndex(r.endExclusive);
+     laneEnds[lane]=r.endMonth;
    }
    r.lane=lane;
  });
@@ -818,11 +790,11 @@ function renderEmploymentTimeline(svg,jobs){
  const startY=top+Math.max(0,(available-used)/2);
 
  ranges.forEach(r=>{
-   const x1=Math.max(left,Math.min(W-right,xForDate(r.start)));
-   const x2=Math.max(left,Math.min(W-right,xForDate(r.endExclusive)));
+   const x1=Math.max(left,Math.min(W-right,xForMonth(r.startMonth)));
+   const x2=Math.max(left,Math.min(W-right,xForMonth(r.endMonth)));
    const width=Math.max(2.5,x2-x1);
    const y=startY+r.lane*lanePitch;
-   const months=Math.max(1,monthIndex(r.endExclusive)-monthIndex(r.start));
+   const months=Math.max(0,r.endMonth-r.startMonth);
 
    const group=svgEl('g',{class:'timeline-job'});
    group.appendChild(svgEl('title',{},`Employment ${r.index+1}: ${dateLine(r.job)} — ${monthDurationLabel(months)}`));
