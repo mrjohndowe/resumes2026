@@ -227,6 +227,27 @@ body{min-height:100vh}
   width:100%;
   height:100%;
 }
+.employment-timeline-placeholder{
+  overflow:hidden;
+}
+.flow-timeline.employment-timeline-placeholder{position:relative}
+.employment-timeline-placeholder::before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:75pt;
+  border-top:.75pt dotted #222;
+}
+.employment-timeline-placeholder span{
+  position:absolute;
+  top:84pt;
+  left:0;
+  right:0;
+  text-align:center;
+  color:#777;
+  font:8pt Arial,Helvetica,sans-serif;
+}
 
 
 /* v3: unlimited employment pagination. Page 2+ contains at most two

@@ -8,7 +8,7 @@ $u=require_login();
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="csrf-token" content="<?=htmlspecialchars(csrf_token())?>">
 <title><?=htmlspecialchars(APP_NAME)?></title>
-<link rel="stylesheet" href="assets/resume.css?v=20260819-new-blank-placeholders2">
+<link rel="stylesheet" href="assets/resume.css?v=20260901-page-1-match-page-2">
 </head><body>
 <header class="toolbar no-print">
   <strong><?=htmlspecialchars(APP_NAME)?></strong>
@@ -72,6 +72,9 @@ $u=require_login();
       <div id="detailsPreview" class="details-preview" style="--x:399.5;--y:242.6;--w:174;--h:70"></div>
       <div class="field" data-key="employmentTitle" style="--x:24;--y:405.6;--w:150;--h:16;--fs:12;--min:7;--lh:1.1"></div>
       <div id="page1Jobs"></div>
+      <div class="employment-timeline" aria-label="Employment duration timeline">
+        <svg viewBox="0 0 547.28 105" preserveAspectRatio="none"></svg>
+      </div>
     </section>
     <section class="page" data-page="2">
       <img class="page-bg" src="assets/page-2.png" alt="">
@@ -81,5 +84,5 @@ $u=require_login();
   </main>
 </div>
 <script>window.RESUME_USER=<?=json_encode($u,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT)?>;</script>
-<script src="assets/resume.js?v=20260901-automatic-timeline1"></script>
+<script src="assets/resume.js?v=20260901-live-timeline-page-1-page-2"></script>
 </body></html>

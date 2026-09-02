@@ -9,7 +9,6 @@ const basicForm=document.getElementById('basicForm');
 const jobsForm=document.getElementById('jobsForm');
 const educationForm=document.getElementById('educationForm');
 const overflowPages=document.getElementById('overflowPages');
-const timelineSvg=document.getElementById('employmentTimelineSvg');
 const photoFrame=document.getElementById('photoFrame');
 const photoOverlay=document.getElementById('photoOverlay');
 const photoZoom=document.getElementById('photoZoom');
@@ -485,7 +484,6 @@ function renderDynamicEmploymentPages(){
  }
 
  let globalIndex=3;
- let finalTimeline=null;
  chunks.forEach((jobsOnPage,pageIndex)=>{
    const pageNumber=2+pageIndex;
    const host=dynamicPageSurface(pageNumber);
@@ -494,19 +492,13 @@ function renderDynamicEmploymentPages(){
      <div class="flow-job-grid">${jobsOnPage.map((job,local)=>flowJobCard(job,globalIndex+local)).join('')}</div>`;
    globalIndex+=jobsOnPage.length;
 
-   // Education and the employment timeline follow the final employment row.
-   // Adding jobs therefore pushes these sections downward and, once another
-   // page is needed, moves them to that new final page.
+   // Education follows the final employment row. Adding jobs therefore pushes
+   // it downward and, once another page is needed, moves it to that final page.
    if(pageIndex===chunks.length-1){
      host.insertAdjacentHTML('beforeend',flowEducation());
-     const timeline=document.createElement('div');
-     timeline.className='flow-timeline';
-     timeline.innerHTML='<svg viewBox="0 0 547.28 105" preserveAspectRatio="none" aria-label="Employment duration timeline"></svg>';
-     host.appendChild(timeline);
-     finalTimeline=timeline.querySelector('svg');
+     host.insertAdjacentHTML('beforeend','<div class="flow-timeline" aria-label="Employment duration timeline"><svg viewBox="0 0 547.28 105" preserveAspectRatio="none"></svg></div>');
    }
  });
- if(finalTimeline)renderEmploymentTimeline(finalTimeline,state.jobs);
 }
 function renderSkillsPreview(){
  const host=document.getElementById('skillsPreview');
@@ -582,6 +574,7 @@ function renderPreview(){
  });
 
  renderDynamicEmploymentPages();
+ document.querySelectorAll('.employment-timeline svg, .flow-timeline svg').forEach(svg=>renderEmploymentTimeline(svg,state.jobs));
 
  if(state.photo_path)showPhoto(state.photo_path); else hidePhoto(false);
  updateExperience();
@@ -715,101 +708,23 @@ function updateExperience(){
  expEl.textContent=`Total Employment Experience: ${parts.length?parts.join(', '):'0 months'}`;
 }
 
-function monthDurationLabel(months){
- const y=Math.floor(months/12),m=months%12,parts=[];
- if(y)parts.push(`${y} year${y===1?'':'s'}`);
- if(m)parts.push(`${m} month${m===1?'':'s'}`);
- return parts.length?parts.join(', '):'Less than 1 month';
-}
-function svgEl(name,attrs={},text=''){
- const el=document.createElementNS('http://www.w3.org/2000/svg',name);
- Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));
- if(text!=='')el.textContent=text;
- return el;
-}
-
+function monthDurationLabel(months){const y=Math.floor(months/12),m=months%12,parts=[];if(y)parts.push(`${y} year${y===1?'':'s'}`);if(m)parts.push(`${m} month${m===1?'':'s'}`);return parts.length?parts.join(', '):'Less than 1 month'}
+function svgEl(name,attrs={},text=''){const el=document.createElementNS('http://www.w3.org/2000/svg',name);Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v)));if(text!=='')el.textContent=text;return el}
 function renderEmploymentTimeline(svg,jobs){
- if(!svg)return;
  while(svg.lastChild)svg.removeChild(svg.lastChild);
- const ranges=employmentRanges(jobs);
-
- const W=547.28,H=105,left=14,right=10,axisY=75;
- const plotW=W-left-right;
+ const ranges=employmentRanges(jobs),W=547.28,H=105,left=14,right=10,axisY=75,plotW=W-left-right;
  svg.appendChild(svgEl('rect',{x:0,y:0,width:W,height:H,fill:'#fff'}));
-
- if(!ranges.length){
-   svg.appendChild(svgEl('line',{x1:left,y1:axisY,x2:W-right,y2:axisY,class:'timeline-axis'}));
-   svg.appendChild(svgEl('text',{x:W/2,y:95,'text-anchor':'middle',class:'timeline-empty'},'Add employment dates to build the timeline'));
-   return;
- }
-
- const earliest=Math.min(...ranges.map(r=>r.startMonth));
- const latest=Math.max(...ranges.map(r=>r.endMonth));
- // The axis is based only on entered employment dates. Current month is used
- // only for blank/Present endings, never as padding for historical jobs.
- const domainStart=Math.floor(earliest/12)*12;
- const domainEnd=Math.max(domainStart+12,Math.ceil((latest+1)/12)*12);
- const domainMonths=domainEnd-domainStart;
- const xForMonth=m=>left+((m-domainStart)/domainMonths)*plotW;
- const xForDate=d=>xForMonth(monthIndex(d));
-
+ if(!ranges.length){svg.appendChild(svgEl('line',{x1:left,y1:axisY,x2:W-right,y2:axisY,class:'timeline-axis'}));svg.appendChild(svgEl('text',{x:W/2,y:95,'text-anchor':'middle',class:'timeline-empty'},'Add employment dates to build the timeline'));return}
+ const earliest=Math.min(...ranges.map(r=>r.startMonth)),latest=Math.max(...ranges.map(r=>r.endMonth)),domainStart=Math.floor(earliest/12)*12,domainEnd=Math.max(domainStart+12,Math.ceil((latest+1)/12)*12),domainMonths=domainEnd-domainStart,xForMonth=m=>left+((m-domainStart)/domainMonths)*plotW;
  svg.appendChild(svgEl('line',{x1:left,y1:axisY,x2:W-right,y2:axisY,class:'timeline-axis'}));
-
- const startYear=Math.floor(domainStart/12);
- const endYear=Math.ceil(domainEnd/12);
- const spanYears=Math.max(1,endYear-startYear);
- const tickStep=spanYears>24?4:spanYears>12?2:1;
- for(let year=startYear;year<=endYear;year+=tickStep){
-   const x=xForMonth(year*12);
-   svg.appendChild(svgEl('line',{x1:x,y1:axisY-3,x2:x,y2:axisY+3,class:'timeline-tick'}));
-   svg.appendChild(svgEl('text',{x,y:94,'text-anchor':'middle',class:'timeline-year'},`’${String(year).slice(-2)}`));
- }
-
- // Place overlapping date ranges into separate vertical lanes.
- const ordered=[...ranges].sort((a,b)=>a.startMonth-b.startMonth || b.endMonth-a.endMonth || a.index-b.index);
- const laneEnds=[];
- ordered.forEach(r=>{
-   let lane=laneEnds.findIndex(endMonth=>r.startMonth>=endMonth);
-   if(lane<0){
-     lane=laneEnds.length;
-     laneEnds.push(r.endMonth);
-   }else{
-     laneEnds[lane]=r.endMonth;
-   }
-   r.lane=lane;
- });
-
- const laneCount=Math.max(1,laneEnds.length);
- const top=8;
- const bottom=axisY-8;
- const available=Math.max(12,bottom-top);
- const gap=laneCount>5?1.25:2.25;
- const barH=Math.max(4,Math.min(9,(available-gap*(laneCount-1))/laneCount));
- const lanePitch=barH+gap;
- const used=laneCount*barH+(laneCount-1)*gap;
- const startY=top+Math.max(0,(available-used)/2);
-
- ranges.forEach(r=>{
-   const x1=Math.max(left,Math.min(W-right,xForMonth(r.startMonth)));
-   const x2=Math.max(left,Math.min(W-right,xForMonth(r.endMonth)));
-   const width=Math.max(2.5,x2-x1);
-   const y=startY+r.lane*lanePitch;
-   const months=Math.max(0,r.endMonth-r.startMonth);
-
-   const group=svgEl('g',{class:'timeline-job'});
-   group.appendChild(svgEl('title',{},`Employment ${r.index+1}: ${dateLine(r.job)} — ${monthDurationLabel(months)}`));
-   group.appendChild(svgEl('line',{x1:x1,y1:y+barH,x2:x1,y2:axisY,class:'timeline-guide'}));
-   group.appendChild(svgEl('rect',{
-     x:x1,y,width,height:barH,rx:barH/2,ry:barH/2,class:'timeline-bar'
-   }));
-
-   const cx=Math.max(left+5,Math.min(W-right-5,x1+Math.min(6,width/2)));
-   const cy=Math.max(5,y-5.2);
-   group.appendChild(svgEl('circle',{cx,cy,r:4.8,class:'timeline-number-circle'}));
-   group.appendChild(svgEl('text',{x:cx,y:cy+2.25,'text-anchor':'middle',class:'timeline-number'},String(r.index+1)));
-   svg.appendChild(group);
- });
+ const startYear=Math.floor(domainStart/12),endYear=Math.ceil(domainEnd/12),spanYears=Math.max(1,endYear-startYear),tickStep=spanYears>24?4:spanYears>12?2:1;
+ for(let year=startYear;year<=endYear;year+=tickStep){const x=xForMonth(year*12);svg.appendChild(svgEl('line',{x1:x,y1:axisY-3,x2:x,y2:axisY+3,class:'timeline-tick'}));svg.appendChild(svgEl('text',{x,y:94,'text-anchor':'middle',class:'timeline-year'},`’${String(year).slice(-2)}`));}
+ const ordered=[...ranges].sort((a,b)=>a.startMonth-b.startMonth||b.endMonth-a.endMonth||a.index-b.index),laneEnds=[];
+ ordered.forEach(r=>{let lane=laneEnds.findIndex(end=>r.startMonth>=end);if(lane<0){lane=laneEnds.length;laneEnds.push(r.endMonth)}else laneEnds[lane]=r.endMonth;r.lane=lane;});
+ const laneCount=Math.max(1,laneEnds.length),top=8,bottom=axisY-8,available=Math.max(12,bottom-top),gap=laneCount>5?1.25:2.25,barH=Math.max(4,Math.min(9,(available-gap*(laneCount-1))/laneCount)),pitch=barH+gap,used=laneCount*barH+(laneCount-1)*gap,startY=top+Math.max(0,(available-used)/2);
+ ranges.forEach(r=>{const x1=Math.max(left,Math.min(W-right,xForMonth(r.startMonth))),x2=Math.max(left,Math.min(W-right,xForMonth(r.endMonth))),width=Math.max(2.5,x2-x1),y=startY+r.lane*pitch,months=Math.max(0,r.endMonth-r.startMonth),group=svgEl('g',{class:'timeline-job'}),cx=Math.max(left+5,Math.min(W-right-5,x1+Math.min(6,width/2))),cy=Math.max(5,y-5.2);group.appendChild(svgEl('title',{},`Employment ${r.index+1}: ${dateLine(r.job)} — ${monthDurationLabel(months)}`));group.appendChild(svgEl('line',{x1,y1:y+barH,x2:x1,y2:axisY,class:'timeline-guide'}));group.appendChild(svgEl('rect',{x:x1,y,width,height:barH,rx:barH/2,ry:barH/2,class:'timeline-bar'}));group.appendChild(svgEl('circle',{cx,cy,r:4.8,class:'timeline-number-circle'}));group.appendChild(svgEl('text',{x:cx,y:cy+2.25,'text-anchor':'middle',class:'timeline-number'},String(r.index+1)));svg.appendChild(group);});
 }
+
 function setStatus(s){statusEl.textContent=s}
 function queueSave(){
  setStatus('Changes pending...');
