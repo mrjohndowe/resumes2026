@@ -1,0 +1,577 @@
+*{box-sizing:border-box}
+:root{--panel-w:430px}
+html,body{margin:0;background:#e9e9e9;color:#111;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh}
+.toolbar{position:sticky;top:0;z-index:1000;display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px;background:#181818;color:#fff;box-shadow:0 2px 8px #0004}
+.toolbar select,.toolbar button,.button-link{font:inherit;border:1px solid #555;background:#fff;color:#111;padding:7px 10px;border-radius:5px;text-decoration:none}
+.toolbar #status{margin-left:auto}
+.editor-shell{display:grid;grid-template-columns:minmax(350px,var(--panel-w)) minmax(0,1fr);min-height:calc(100vh - 58px)}
+.form-panel{position:sticky;top:58px;align-self:start;height:calc(100vh - 58px);overflow:auto;background:#f8f8f8;border-right:1px solid #d4d4d4;padding:18px}
+.form-panel-head{margin-bottom:18px}
+.form-panel-head h1{margin:0 0 6px;font-size:22px}
+.form-panel-head p{margin:0;color:#666;font-size:14px;line-height:1.4}
+.form-section{background:#fff;border:1px solid #ddd;border-radius:10px;padding:14px;margin-bottom:14px;box-shadow:0 1px 2px #00000008}
+.form-section h2{font-size:16px;margin:0}
+.section-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-grid .full{grid-column:1/-1}
+.form-field{display:block;font-size:12px;font-weight:700;color:#333}
+.form-field input,.form-field textarea{width:100%;margin-top:5px;border:1px solid #c8c8c8;border-radius:6px;background:#fff;padding:9px 10px;font:14px/1.35 Arial,Helvetica,sans-serif;color:#111}
+.form-field textarea{min-height:78px;resize:vertical}
+.form-field input:focus,.form-field textarea:focus{outline:2px solid #94b7ff;border-color:#5d8ee9}
+.primary-btn,.job-actions button{border:1px solid #bbb;border-radius:6px;background:#fff;padding:7px 10px;cursor:pointer;font:inherit}
+.primary-btn{background:#161616;color:#fff;border-color:#161616;font-weight:700;white-space:nowrap}
+.job-card{border:1px solid #d8d8d8;border-radius:9px;background:#fcfcfc;padding:12px;margin:0 0 12px}
+.job-card-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.job-card-head strong{font-size:14px}
+.job-actions{display:flex;gap:5px}
+.job-actions button{padding:5px 8px;font-size:12px}
+.job-actions .danger{color:#a40000}
+#workspace{display:flex;flex-direction:column;align-items:center;gap:18px;padding:20px;overflow:auto;min-width:0}
+.page{position:relative;width:595.28pt;height:841.89pt;background:white;overflow:hidden;box-shadow:0 3px 16px #0003;flex:none}
+.page-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none;user-select:none}
+.field{position:absolute;left:calc(var(--x)*1pt);top:calc(var(--y)*1pt);width:calc(var(--w)*1pt);height:calc(var(--h)*1pt);font-size:calc(var(--fs)*1pt);line-height:var(--lh);font-family:Arial,Helvetica,sans-serif;white-space:pre-wrap;overflow:hidden;outline:0;z-index:3;padding:0;margin:0;word-break:normal}
+.field[data-key="name"]{font-weight:700;letter-spacing:-1.2pt}
+.photo-input-hidden{display:none!important}
+.photo-frame{
+  position:absolute;
+  left:399.52pt;
+  top:24pt;
+  width:171.76pt;
+  height:171.76pt;
+  border-radius:50%;
+  overflow:hidden;
+  background:#fff;
+  z-index:4;
+  touch-action:none;
+  user-select:none;
+}
+.photo-frame.has-photo{cursor:grab}
+.photo-frame.has-photo:active{cursor:grabbing}
+.photo-frame.has-photo:hover{outline:1px dashed #6998ff;outline-offset:2px}
+.photo-overlay{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border-radius:0;
+  object-fit:cover;
+  display:none;
+  pointer-events:none;
+  user-select:none;
+  transform-origin:50% 50%;
+  will-change:transform;
+}
+.photo-controls .photo-control-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.photo-upload-btn{display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.secondary-btn{background:#fff;color:#111;border-color:#bbb}
+.danger-btn{background:#fff;color:#9f1515;border-color:#d6a5a5}
+[hidden]{display:none!important}
+.photo-zoom-label{display:flex;justify-content:space-between;gap:12px;font-size:12px;font-weight:700;color:#333;margin-bottom:5px}
+.photo-zoom{width:100%;accent-color:#161616}
+.photo-help{margin:8px 0 0;color:#666;font-size:12px;line-height:1.4}
+
+.employment-timeline{position:absolute;left:24pt;top:722pt;width:547.28pt;height:105pt;background:#fff;z-index:5;overflow:hidden}
+.employment-timeline svg{display:block;width:100%;height:100%;overflow:visible}
+.timeline-axis{stroke:#111;stroke-width:.75;stroke-dasharray:1.2 1.8}
+.timeline-tick{stroke:#111;stroke-width:.65;stroke-dasharray:1 1.5}
+.timeline-year{font:9px Arial,Helvetica,sans-serif;fill:#222}
+.timeline-empty{font:8px Arial,Helvetica,sans-serif;fill:#777}
+.timeline-guide{stroke:#111;stroke-width:.65;stroke-dasharray:1 1.5}
+.timeline-bar{fill:#171717}
+.timeline-number-circle{fill:#fff;stroke:#111;stroke-width:.8}
+.timeline-number{font:6px Arial,Helvetica,sans-serif;fill:#111}
+
+.continuation-page{background:#fff}
+.continuation-title{position:absolute;left:24pt;top:30pt;font-size:14pt;font-weight:700;z-index:3}
+.continuation-rule{position:absolute;left:24pt;right:24pt;top:54pt;border-top:1px solid #bbb}
+.overflow-job .job-number{font-weight:700}
+.auth-body{min-height:100vh;display:grid;place-items:center;padding:20px}
+.auth-card{width:min(420px,100%);background:white;padding:28px;border-radius:12px;box-shadow:0 8px 30px #0002}
+.auth-card label{display:block;margin:14px 0}
+.auth-card input,.auth-card select{width:100%;padding:10px;margin-top:5px}
+.auth-card button{padding:10px 14px}
+.error{background:#fee;color:#900;padding:10px}
+.muted{color:#666;font-size:.9rem}
+.admin{max-width:1100px;margin:25px auto;background:white;padding:24px}
+.admin table{width:100%;border-collapse:collapse;margin:12px 0 30px}
+.admin th,.admin td{border:1px solid #ddd;padding:8px;text-align:left}
+.admin form.inline{display:inline}.admin input,.admin select,.admin button{padding:7px}
+@page{size:A4;margin:0}
+@media print{
+  html,body{background:white;margin:0;padding:0}
+  .no-print,.toolbar,.form-panel{display:none!important}
+  .editor-shell{display:block}
+  #workspace{display:block;padding:0;margin:0;overflow:visible}
+  .page{width:210mm;height:297mm;box-shadow:none;margin:0;page-break-after:always;break-after:page}
+  .page:last-child{page-break-after:auto;break-after:auto}
+  .field{outline:none!important;background:transparent!important}
+  .photo-frame{outline:none!important}
+}
+@media(max-width:1100px){
+  :root{--panel-w:360px}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid .full{grid-column:auto}
+}
+@media(max-width:850px){
+  .editor-shell{display:block}
+  .form-panel{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid #d4d4d4}
+  #workspace{align-items:flex-start;overflow-x:auto}
+  .toolbar #status{margin-left:0}
+}
+
+
+/* Dynamic employment flow: jobs determine where Education and the timeline sit. */
+.dynamic-page-surface{
+  position:absolute;
+  left:18pt;
+  right:18pt;
+  top:24pt;
+  bottom:14pt;
+  z-index:6;
+  background:#fff;
+  overflow:hidden;
+  padding:0 6pt;
+}
+.continuation-page{background:#fff}
+.continuation-surface{top:26pt}
+.flow-continuation-title{
+  font-size:14pt;
+  line-height:1.1;
+  font-weight:700;
+  margin:0 0 13pt;
+  padding-bottom:7pt;
+  border-bottom:1px solid #bbb;
+}
+.flow-job-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  column-gap:14pt;
+  row-gap:16pt;
+  align-items:start;
+}
+.flow-job-card{
+  min-width:0;
+  min-height:190pt;
+  height:190pt;
+  overflow:hidden;
+}
+.flow-job-heading{
+  font-size:12pt;
+  line-height:1.1;
+  font-weight:700;
+  min-height:16pt;
+  margin-bottom:4pt;
+}
+.flow-job-employer{
+  font-size:11.5pt;
+  line-height:1.15;
+  min-height:27pt;
+  margin-bottom:5pt;
+}
+.flow-job-dates{
+  font-size:9.5pt;
+  line-height:1.1;
+  min-height:13pt;
+  margin-bottom:7pt;
+}
+.flow-job-description{
+  white-space:pre-wrap;
+  font-size:9.4pt;
+  line-height:1.12;
+  max-height:121pt;
+  overflow:hidden;
+}
+.flow-education{
+  margin-top:16pt;
+  padding-top:7pt;
+  border-top:1px solid #c9c9c9;
+}
+.flow-section-title{
+  font-size:12pt;
+  line-height:1.1;
+  font-weight:700;
+  margin-bottom:10pt;
+}
+.flow-education-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  column-gap:14pt;
+  min-height:85pt;
+}
+.flow-education-item{min-width:0}
+.flow-education-qualification{
+  white-space:pre-wrap;
+  font-size:11.5pt;
+  line-height:1.15;
+  font-weight:700;
+  margin-bottom:5pt;
+}
+.flow-education-school{
+  font-size:11pt;
+  line-height:1.15;
+  margin-bottom:6pt;
+}
+.flow-education-note{
+  font-size:9.5pt;
+  line-height:1.15;
+}
+.flow-timeline{
+  width:100%;
+  height:105pt;
+  margin-top:14pt;
+  background:#fff;
+}
+.flow-timeline svg{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+
+/* v3: unlimited employment pagination. Page 2+ contains at most two
+   three-column employment rows so Education + timeline can follow the final row. */
+.dynamic-page-surface .flow-job-grid:empty{display:none}
+.dynamic-page-surface .flow-job-grid:empty + .flow-education{margin-top:4pt}
+.flow-job-card{break-inside:avoid}
+.flow-education,.flow-timeline{break-inside:avoid}
+
+
+/* Skills-only patch. Original page dimensions and coordinates remain unchanged. */
+.skill-editor{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.skill-edit-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 132px;
+  gap:9px;
+  align-items:end;
+}
+.form-field select{
+  width:100%;
+  margin-top:5px;
+  border:1px solid #c8c8c8;
+  border-radius:6px;
+  background:#fff;
+  padding:9px 10px;
+  font:14px/1.35 Arial,Helvetica,sans-serif;
+  color:#111;
+}
+.form-field select:focus{
+  outline:2px solid #94b7ff;
+  border-color:#5d8ee9;
+}
+
+.skills-preview{
+  position:absolute;
+  left:calc(var(--x)*1pt);
+  top:calc(var(--y)*1pt);
+  width:calc(var(--w)*1pt);
+  height:calc(var(--h)*1pt);
+  z-index:3;
+  display:grid;
+  grid-template-rows:repeat(8,1fr);
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+}
+.skills-preview-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 58pt;
+  column-gap:5pt;
+  align-items:center;
+  min-height:0;
+  overflow:hidden;
+}
+.skills-preview-name,
+.skills-preview-level{
+  --fs:10;
+  --min:6;
+  font-size:10pt;
+  line-height:1.08;
+  min-width:0;
+  max-height:100%;
+  overflow:hidden;
+  white-space:nowrap;
+}
+.skills-preview-level{
+  text-align:left;
+}
+
+@media(max-width:1100px){
+  .skill-edit-row{
+    grid-template-columns:minmax(0,1fr) 120px;
+  }
+}
+
+
+/* Skills editor refinement: elegant two-column cards.
+   This affects only the editor panel, not the resume preview/print layout. */
+.skill-editor{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:10px !important;
+  align-items:start;
+}
+
+.skill-edit-row{
+  display:grid !important;
+  grid-template-columns:1fr !important;
+  gap:7px !important;
+  align-items:stretch !important;
+  padding:10px;
+  border:1px solid #dedede;
+  border-radius:9px;
+  background:#fcfcfc;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  min-width:0;
+}
+
+.skill-edit-row:hover{
+  border-color:#c8c8c8;
+  background:#fff;
+}
+
+.skill-edit-row .form-field{
+  margin:0;
+  font-size:10px;
+  line-height:1.15;
+  font-weight:700;
+  color:#666;
+  letter-spacing:.02em;
+}
+
+.skill-edit-row .form-field input,
+.skill-edit-row .form-field select{
+  display:block;
+  width:100%;
+  min-width:0;
+  height:36px;
+  margin-top:4px;
+  padding:7px 9px;
+  border:1px solid #cfcfcf;
+  border-radius:7px;
+  background:#fff;
+  color:#111;
+  font:13px/1.2 Arial,Helvetica,sans-serif;
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.025);
+}
+
+.skill-edit-row .form-field input:focus,
+.skill-edit-row .form-field select:focus{
+  outline:2px solid #94b7ff;
+  outline-offset:0;
+  border-color:#5d8ee9;
+}
+
+.skill-edit-level select{
+  cursor:pointer;
+}
+
+/* Keep two columns at normal desktop editor widths.
+   Collapse cleanly on narrower screens. */
+@media(max-width:1100px){
+  .skill-editor{
+    grid-template-columns:1fr !important;
+  }
+}
+
+
+/* Details editor refinement.
+   Keeps all original resume page coordinates untouched. */
+.details-editor{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  align-items:start;
+}
+
+.detail-edit-card{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:7px;
+  padding:10px;
+  border:1px solid #dedede;
+  border-radius:9px;
+  background:#fcfcfc;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  min-width:0;
+}
+
+.detail-edit-card:hover{
+  border-color:#c8c8c8;
+  background:#fff;
+}
+
+.detail-edit-card .form-field{
+  margin:0;
+  font-size:10px;
+  line-height:1.15;
+  font-weight:700;
+  color:#666;
+  letter-spacing:.02em;
+}
+
+.detail-edit-card .form-field input,
+.detail-edit-card .form-field textarea{
+  display:block;
+  width:100%;
+  min-width:0;
+  margin-top:4px;
+  padding:7px 9px;
+  border:1px solid #cfcfcf;
+  border-radius:7px;
+  background:#fff;
+  color:#111;
+  font:13px/1.2 Arial,Helvetica,sans-serif;
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.025);
+}
+
+.detail-edit-card .form-field input{
+  height:36px;
+}
+
+.detail-edit-card .form-field textarea{
+  min-height:58px;
+  resize:vertical;
+}
+
+.detail-edit-card .form-field input:focus,
+.detail-edit-card .form-field textarea:focus{
+  outline:2px solid #94b7ff;
+  outline-offset:0;
+  border-color:#5d8ee9;
+}
+
+/* Two-column Details display inside the original fixed Details box. */
+.details-preview{
+  position:absolute;
+  left:calc(var(--x)*1pt);
+  top:calc(var(--y)*1pt);
+  width:calc(var(--w)*1pt);
+  height:calc(var(--h)*1pt);
+  z-index:3;
+  display:grid;
+  grid-template-rows:26pt 44pt;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+.details-preview-row{
+  display:grid;
+  grid-template-columns:82pt minmax(0,1fr);
+  column-gap:6pt;
+  align-items:start;
+  min-height:0;
+  overflow:hidden;
+}
+
+.details-preview-label,
+.details-preview-value{
+  --fs:10;
+  --min:6;
+  font-size:10pt;
+  line-height:1.15;
+  min-width:0;
+  max-height:100%;
+  overflow:hidden;
+  white-space:pre-line;
+}
+
+.details-preview-label{
+  text-align:left;
+}
+
+.details-preview-value{
+  text-align:right;
+}
+
+@media(max-width:1100px){
+  .details-editor{
+    grid-template-columns:1fr;
+  }
+}
+
+
+/* Dynamic Skills and Details editor controls */
+.dynamic-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.section-add-btn{
+  border:1px solid #cfcfcf;
+  border-radius:7px;
+  background:#fff;
+  padding:7px 11px;
+  font:600 12px/1 Arial,Helvetica,sans-serif;
+  color:#222;
+  cursor:pointer;
+}
+.section-add-btn:hover{
+  background:#f5f5f5;
+  border-color:#b8b8b8;
+}
+.skill-edit-row,
+.detail-edit-card{
+  position:relative;
+}
+.mini-remove{
+  position:absolute;
+  top:6px;
+  right:6px;
+  width:24px;
+  height:24px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:0;
+  border-radius:50%;
+  background:#f2f2f2;
+  color:#777;
+  font:700 17px/1 Arial,Helvetica,sans-serif;
+  cursor:pointer;
+  z-index:2;
+}
+.mini-remove:hover{
+  background:#ffe8e8;
+  color:#a32626;
+}
+.skill-edit-row .form-field,
+.detail-edit-card .form-field{
+  padding-right:20px;
+}
+.detail-edit-card .form-field select{
+  display:block;
+  width:100%;
+  min-width:0;
+  height:36px;
+  margin-top:4px;
+  padding:7px 9px;
+  border:1px solid #cfcfcf;
+  border-radius:7px;
+  background:#fff;
+  color:#111;
+  font:13px/1.2 Arial,Helvetica,sans-serif;
+}
+.skills-preview,
+.details-preview{
+  grid-template-rows:none !important;
+}
+
+
+/* NEW resume guidance. Placeholder text is visual only and never saved. */
+.form-field input::placeholder,
+.form-field textarea::placeholder,
+.job-card input::placeholder,
+.job-card textarea::placeholder{
+  color:#8f969d;
+  opacity:1;
+  font-style:italic;
+}
+
+.form-field select:invalid{
+  color:#8f969d;
+}
