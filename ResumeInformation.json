@@ -1,0 +1,164 @@
+{
+    "name": "Jose Davila",
+    "address": "1663 Gaylord Ave, Apt. 1, Pueblo, CO 81004, USA",
+    "phoneEmail": "719-248-3911 / 719-400-4022\ndavila.jose.84@outlook.com",
+    "profileTitle": "Opportunies",
+    "profileText": "Results-driven leader with extensive\nexperience in operations, customer\nservice, and team supervision. Proven\nability to manage staff, streamline\nprocesses, and maintain high service\nstandards across fast-paced\nenvironments. Known for reliability,\nadaptability, and a calm, professional\npresence under pressure.",
+    "skillsTitle": "Skills",
+    "skillsText": "Team Leadership    Experienced\nShift & Staff Supervision    Experienced\nCustomer Service Excellence    Experienced\nCash & POS Managemen    Experienced\nScheduling & Coordination    Beginner\nConflict Resolutio    Experienced\nInventory Control    Expert\nOperational Efficiency    Novice",
+    "detailsTitle": "Details",
+    "detailsText": "Nationality\nHispanic / Latino\nDate of Birth\n08/04/1984\nPlace of birth\nHumacao, Puerto Rico",
+    "employmentTitle": "Employment History",
+    "educationTitle": "Education",
+    "edu1Qualification": "A+ MCSE,",
+    "edu1School": "Job Corps Academy, Edison, NJ",
+    "edu1Note": "Microsoft Certified System Engineer",
+    "edu2Qualification": "High School Diploma",
+    "edu2School": "Eastside High School, Paterson",
+    "photo_crop": {
+        "x": 0.791484716157205,
+        "y": 1,
+        "scale": 1.32
+    },
+    "jobs": [
+        {
+            "number": "1",
+            "title": "Sales",
+            "employerLine": "Sprint (Nextel), New Jersey",
+            "start": "Jan 1995",
+            "end": "May 2020",
+            "dateLine": "Jan 1995 - May 2020",
+            "description": "Dynamic and customer-focused Sprint\nPhone Salesman with a proven ability to\nmatch customers with the perfect devices\nand wireless plans. Skilled in product\ndemonstrations, closing sales, and\ndelivering exceptional service that builds\nloyalty and drives store performance."
+        },
+        {
+            "number": "2",
+            "title": "3rd Keyholder",
+            "employerLine": "Dollar General, Johnstown, PA",
+            "start": "May 2018",
+            "end": "Aug 2019",
+            "dateLine": "May 2018 - Aug 2019",
+            "description": "• Supported store management with\ndaily operations and cash controls.\n• Reduced shrinkage through inventory\noversight and security awareness.\n• Assisted with staff training and\ncustomer issue resolution."
+        },
+        {
+            "number": "3",
+            "title": "Lead Flagger",
+            "employerLine": "Flagger Force, Greensburg, PA",
+            "start": "Jun 2019",
+            "end": "Jan 2020",
+            "dateLine": "Jun 2019 - Jan 2020",
+            "description": "• Directed crews and assigned tasks to\nensure safe and timely project\ncompletion.\n• Trained staff on safety procedures,\nresulting in zero reported injuries."
+        },
+        {
+            "number": "4",
+            "title": "Manager",
+            "employerLine": "The Beehive Showbar, Greensburg, PA",
+            "start": "Feb 2020",
+            "end": "Nov 2020",
+            "dateLine": "Feb 2020 - Nov 2020",
+            "description": "• Oversaw daily operations, staff\nperformance, and customer satisfaction.\n• Increased revenue through promotions\nand service improvements.\n• Reduced operational waste by over\n75% through process optimization."
+        },
+        {
+            "number": "5",
+            "title": "Dispatcher",
+            "employerLine": "XLN Transport LLC, Jamison, PA",
+            "start": "Dec 2020",
+            "end": "Dec 2023",
+            "dateLine": "Dec 2020 - Dec 2023",
+            "description": "• Coordinated dispatch, routing, and\nreal-time tracking of fleet vehicles.\n• Maintained accurate call logs and\nelectronic records.\n• Prioritized and managed over 25\ndaily service calls."
+        },
+        {
+            "number": "6",
+            "title": "Cashier",
+            "employerLine": "KFC/Taco Bell, Trinidad, CO",
+            "start": "Apr 2024",
+            "end": "Oct 2025",
+            "dateLine": "Apr 2024 - Oct 2025",
+            "description": "• Operated both Front Counter and\nDrive Thru registers simultaneously\nduring high-volume shifts.\n• Maintained speed, accuracy, and\ncustomer service standards while\nmanaging multiple order flows."
+        },
+        {
+            "number": "7",
+            "title": "Shift Lead",
+            "employerLine": "Love's Arby's, Trinidad, CO",
+            "start": "Oct 2025",
+            "end": "Nov 2025",
+            "dateLine": "Oct 2025 - Nov 2025",
+            "description": "• Supervised daily shift operations to\nensure smooth workflow and\nexceptional customer experience.\n• Led team members during peak\nhours, maintaining efficiency, accuracy,\nand service quality."
+        },
+        {
+            "number": "8",
+            "title": "Shift Manager",
+            "employerLine": "Mcdonald's Pueblo, CO",
+            "start": "Feb 2026",
+            "end": "Mar 2026",
+            "dateLine": "Feb 2026 - Mar 2026",
+            "description": "• Provided friendly, efficient customer service in a fast-paced restaurant environment.\n• Took customer orders accurately and processed cash, credit, and mobile payments."
+        },
+        {
+            "number": "9",
+            "title": "Soil Sorter",
+            "employerLine": "Hospital Cooperative Laundry",
+            "start": "Mar 2026",
+            "end": "Jul 2026",
+            "dateLine": "Mar 2026 - Jul 2026",
+            "description": "* Sorted soiled hospital linens and garments according to type, material, and processing requirements.\n* Identified and removed contaminated, damaged, or hazardous items while following safety procedures."
+        },
+        {
+            "number": "10",
+            "title": "Journeyman II",
+            "employerLine": "Moss- A Construction Company",
+            "start": "Jul 2026",
+            "end": "Aug 2026",
+            "dateLine": "Jul 2026 - Aug 2026",
+            "description": "* Performed skilled construction work including installation, repair, demolition, and general job-site duties.\n* Read and followed blueprints, measurements, specifications, and supervisor instructions to complete assigned work accurately"
+        }
+    ],
+    "skills": [
+        {
+            "name": "Team Leadership",
+            "level": "Experienced"
+        },
+        {
+            "name": "Shift & Staff Supervision",
+            "level": "Experienced"
+        },
+        {
+            "name": "Customer Service Excellence",
+            "level": "Experienced"
+        },
+        {
+            "name": "Cash & POS Managemen",
+            "level": "Experienced"
+        },
+        {
+            "name": "Scheduling & Coordination",
+            "level": "Beginner"
+        },
+        {
+            "name": "Conflict Resolutio",
+            "level": "Experienced"
+        },
+        {
+            "name": "Inventory Control",
+            "level": "Expert"
+        },
+        {
+            "name": "Operational Efficiency",
+            "level": "Novice"
+        }
+    ],
+    "details": [
+        {
+            "label": "Nationality",
+            "value": "Hispanic / Latino"
+        },
+        {
+            "label": "Date of Birth",
+            "value": "08/04/1984"
+        },
+        {
+            "label": "Place of birth",
+            "value": "Humacao, Puerto Rico"
+        }
+    ],
+    "photo_path": "uploads/resume-1-bc8199f5bb6173be.png"
+}
