@@ -471,10 +471,12 @@ function dynamicPageSurface(pageNumber){
 function renderDynamicEmploymentPages(){
  const afterFirstPage=state.jobs.slice(3);
  const chunks=[];
- const pageCapacity=6;
+ // Page 1 remains reserved for the latest three employments. Continuation
+ // pages use three compact rows before another page is created.
+ const pageCapacity=9;
 
  // Always keep page 2 present. Jobs are never truncated: each additional
- // group of six creates another A4 page.
+ // group of nine creates another A4 page.
  if(afterFirstPage.length===0){
    chunks.push([]);
  }else{

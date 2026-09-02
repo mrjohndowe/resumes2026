@@ -152,8 +152,8 @@ body{min-height:100vh}
 }
 .flow-job-card{
   min-width:0;
-  min-height:190pt;
-  height:190pt;
+  min-height:150pt;
+  height:150pt;
   overflow:hidden;
 }
 .flow-job-heading{
@@ -179,7 +179,7 @@ body{min-height:100vh}
   white-space:pre-wrap;
   font-size:9.4pt;
   line-height:1.12;
-  max-height:121pt;
+  max-height:81pt;
   overflow:hidden;
 }
 .flow-education{
@@ -250,8 +250,8 @@ body{min-height:100vh}
 }
 
 
-/* v3: unlimited employment pagination. Page 2+ contains at most two
-   three-column employment rows so Education + timeline can follow the final row. */
+/* Continuation pages use up to three compact three-column employment rows,
+   preventing mostly empty pages before Education and the timeline. */
 .dynamic-page-surface .flow-job-grid:empty{display:none}
 .dynamic-page-surface .flow-job-grid:empty + .flow-education{margin-top:4pt}
 .flow-job-card{break-inside:avoid}

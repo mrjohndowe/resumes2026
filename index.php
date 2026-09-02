@@ -8,7 +8,7 @@ $u=require_login();
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="csrf-token" content="<?=htmlspecialchars(csrf_token())?>">
 <title><?=htmlspecialchars(APP_NAME)?></title>
-<link rel="stylesheet" href="assets/resume.css?v=20260901-page-1-match-page-2">
+<link rel="stylesheet" href="assets/resume.css?v=20260901-pack-page-2">
 </head><body>
 <header class="toolbar no-print">
   <strong><?=htmlspecialchars(APP_NAME)?></strong>
@@ -84,5 +84,5 @@ $u=require_login();
   </main>
 </div>
 <script>window.RESUME_USER=<?=json_encode($u,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT)?>;</script>
-<script src="assets/resume.js?v=20260901-live-timeline-page-1-page-2"></script>
+<script src="assets/resume.js?v=20260901-pack-page-2"></script>
 </body></html>
